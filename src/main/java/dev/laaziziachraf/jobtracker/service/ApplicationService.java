@@ -1,8 +1,11 @@
 package dev.laaziziachraf.jobtracker.service;
 
+import dev.laaziziachraf.jobtracker.dto.ApplicationRequest;
+import dev.laaziziachraf.jobtracker.exception.NotFoundException;
 import dev.laaziziachraf.jobtracker.model.Application;
 import dev.laaziziachraf.jobtracker.repository.ApplicationRepository;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -21,21 +24,29 @@ public class ApplicationService {
 
     public Application findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
+                .orElseThrow(() -> new NotFoundException(
                         "Candidature introuvable : id=" + id));
     }
 
-    public Application create(Application application) {
+    public Application create(ApplicationRequest request) {
+        Application application = new Application(request.company(), request.position());
+        if (request.status() != null) {
+            application.setStatus(request.status());
+        }
+        application.setAppliedAt(request.appliedAt());
+        application.setNotes(request.notes());
         return repository.save(application);
     }
 
-    public Application update(Long id, Application updated) {
+    public Application update(Long id, ApplicationRequest request) {
         Application existing = findById(id);
-        existing.setCompany(updated.getCompany());
-        existing.setPosition(updated.getPosition());
-        existing.setStatus(updated.getStatus());
-        existing.setAppliedAt(updated.getAppliedAt());
-        existing.setNotes(updated.getNotes());
+        existing.setCompany(request.company());
+        existing.setPosition(request.position());
+        if (request.status() != null) {
+            existing.setStatus(request.status());
+        }
+        existing.setAppliedAt(request.appliedAt());
+        existing.setNotes(request.notes());
         return repository.save(existing);
     }
 

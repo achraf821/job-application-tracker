@@ -1,0 +1,44 @@
+### Lister toutes les candidatures
+GET http://localhost:8080/api/applications
+
+### Créer une candidature
+POST http://localhost:8080/api/applications
+Content-Type: application/json
+
+{
+  "company": "Capgemini",
+  "position": "Développeur Full Stack React Nodejs",
+  "status": "APPLIED",
+  "appliedAt": "2026-07-06",
+  "notes": ""
+}
+
+### Voir une candidature par id
+GET http://localhost:8080/api/applications/3
+
+### Modifier une candidature
+PUT http://localhost:8080/api/applications/2
+Content-Type: application/json
+
+{
+  "company": "SQLI",
+  "position": "Consultant Fullstack Java/Angular",
+  "status": "INTERVIEW",
+  "appliedAt": "2026-07-03",
+  "notes": "Ils ont répondu ! Entretien prévu."
+}
+
+### Supprimer une candidature
+DELETE http://localhost:8080/api/applications/2
+
+### POST invalide — le videur doit refuser
+POST http://localhost:8080/api/applications
+Content-Type: application/json
+
+{"company": "", "position": ""}
+
+### Tenter d'imposer un id — doit être ignoré
+POST http://localhost:8080/api/applications
+Content-Type: application/json
+
+{"id": 999, "company": "Devoteam", "position": "Dev Java"}

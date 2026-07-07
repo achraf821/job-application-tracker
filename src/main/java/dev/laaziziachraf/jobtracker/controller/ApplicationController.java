@@ -1,8 +1,11 @@
 package dev.laaziziachraf.jobtracker.controller;
 
+import jakarta.validation.Valid;
 import dev.laaziziachraf.jobtracker.model.Application;
 import dev.laaziziachraf.jobtracker.service.ApplicationService;
 import org.springframework.http.HttpStatus;
+import dev.laaziziachraf.jobtracker.dto.ApplicationRequest;
+import dev.laaziziachraf.jobtracker.dto.ApplicationResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,24 +21,26 @@ public class ApplicationController {
     }
 
     @GetMapping
-    public List<Application> findAll() {
-        return service.findAll();
+    public List<ApplicationResponse> findAll() {
+        return service.findAll().stream()
+                .map(ApplicationResponse::from)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Application findById(@PathVariable Long id) {
-        return service.findById(id);
+    public ApplicationResponse findById(@PathVariable Long id) {
+        return ApplicationResponse.from(service.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Application create(@RequestBody Application application) {
-        return service.create(application);
+    public ApplicationResponse create(@Valid @RequestBody ApplicationRequest request) {
+        return ApplicationResponse.from(service.create(request));
     }
 
     @PutMapping("/{id}")
-    public Application update(@PathVariable Long id, @RequestBody Application application) {
-        return service.update(id, application);
+    public ApplicationResponse update(@PathVariable Long id, @Valid @RequestBody ApplicationRequest request) {
+        return ApplicationResponse.from(service.update(id, request));
     }
 
     @DeleteMapping("/{id}")
